@@ -1,1 +1,1 @@
-# arduino-eliokit
+# Arduino library for ElioKit Board
