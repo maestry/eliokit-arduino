@@ -24,15 +24,27 @@ For any questions or problems related to using the Eliokit library, please visit
 Here is an example code that shows how to use the Eliokit library to turn on and off the vibration motor:
 
 ```js
-function CopyText() {
-  const clipboard = useClipboard();
-  return (
-    <div>
-      <input ref={clipboard.target} />
-      <button onClick={clipboard.copy}>Copy</button>
-    </div>
-  );
+#include "eliokit.h"
+
+// Vibration Motor address
+#define XL9335_ADD						0x20
+
+void setup() {
+  Serial.begin(115200);
+  i2cPeripheralInitCustomSpeed(I2C_0_MASTER_NUM, I2C_0_MASTER_FREQ_HZ);
+	i2cPeripheralInitCustomSpeed(I2C_1_MASTER_NUM, I2C_1_MASTER_FREQ_HZ);
+  gpioExpanderInit();
+  spiPeripheralInit();
 }
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  gpioExpanderSetVibrationMotorOn();
+  delay(1000);
+  gpioExpanderSetVibrationMotorOff();
+   delay(5000);
+}
+
 ```
 
 
