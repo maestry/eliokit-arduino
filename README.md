@@ -21,6 +21,6 @@ For any questions or problems related to using the Eliokit library, please visit
 
 ## Example Code
 
-Here is an example code that shows how to use the Eliokit library to turn on and off an LED connected to pin 13:
+Here is an example code that shows how to use the Eliokit library to turn on and off the vibration motor:
 
 
