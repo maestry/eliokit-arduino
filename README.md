@@ -1,12 +1,10 @@
 [![Github All Releases](https://img.shields.io/github/downloads/maestry/eliokit-arduino/total.svg)]()
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
+[![Version](https://badge.fury.io/gh/tterb%2FHyde.svg)]()
 
 # Arduino library for ElioKit Board
 
-The Eliokit library is a collection of functions and classes that simplify the development of Arduino projects. It includes features for serial communication, digital and analog pin management, as well as sensor and actuator management.
-
-## Version
-
-The current version of the Eliokit library is v1.0
+The Eliokit library is a collection of functions and classes that simplify the development of Arduino projects based on ElioKit Dev Board. It includes features for serial communication, digital and analog pin management, as well as sensor and actuator management.
 
 ## Installation
 
