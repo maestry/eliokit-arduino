@@ -1,6 +1,6 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/maestry/eliokit-arduino)
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-[![GitHub all releases](https://img.shields.io/github/downloads/maestry/eliokit-arduino/total)
+![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
+![GitHub all releases](https://img.shields.io/github/downloads/maestry/eliokit-arduino/total)
 
 
 # Arduino library for ElioKit Board
