@@ -23,4 +23,16 @@ For any questions or problems related to using the Eliokit library, please visit
 
 Here is an example code that shows how to use the Eliokit library to turn on and off the vibration motor:
 
+```js
+function CopyText() {
+  const clipboard = useClipboard();
+  return (
+    <div>
+      <input ref={clipboard.target} />
+      <button onClick={clipboard.copy}>Copy</button>
+    </div>
+  );
+}
+```
+
 
