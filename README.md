@@ -1,7 +1,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/maestry/eliokit-arduino)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-[![Version](https://badge.fury.io/gh/tterb%2FHyde.svg)]()
-[![GitHub Release](https://img.shields.io/github/release/tterb/PlayMusic.svg?style=flat)](1.0.0) 
+[![GitHub all releases](https://img.shields.io/github/downloads/maestry/eliokit-arduino/total)
+
 
 # Arduino library for ElioKit Board
 
