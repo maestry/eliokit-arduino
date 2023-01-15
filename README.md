@@ -32,7 +32,7 @@ Here is an example code that shows how to use the Eliokit library to turn on and
 void setup() {
   Serial.begin(115200);
   i2cPeripheralInitCustomSpeed(I2C_0_MASTER_NUM, I2C_0_MASTER_FREQ_HZ);
-	i2cPeripheralInitCustomSpeed(I2C_1_MASTER_NUM, I2C_1_MASTER_FREQ_HZ);
+  i2cPeripheralInitCustomSpeed(I2C_1_MASTER_NUM, I2C_1_MASTER_FREQ_HZ);
   gpioExpanderInit();
   spiPeripheralInit();
 }
@@ -42,7 +42,7 @@ void loop() {
   gpioExpanderSetVibrationMotorOn();
   delay(1000);
   gpioExpanderSetVibrationMotorOff();
-   delay(5000);
+  delay(5000);
 }
 
 ```
