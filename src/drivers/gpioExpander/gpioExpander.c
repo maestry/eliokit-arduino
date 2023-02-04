@@ -1,7 +1,6 @@
 #include "gpioExpander.h"
 #include "chips/XL9535.h"
 #include "drivers/boards/s3_bsp.h"
-#include "utils.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 

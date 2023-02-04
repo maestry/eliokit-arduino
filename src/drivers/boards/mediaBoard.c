@@ -1,5 +1,4 @@
 #include "mediaBoard.h"
-#include "utils.h"
 #include "freertos/FreeRTOS.h"
 #include "drivers/eInkDisplay/eInkDisplay.h"
 #include "drivers/touchButtonI2C/touchButton.h"

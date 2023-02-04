@@ -9,7 +9,6 @@
 #include "drivers/boards/s3_bsp.h"
 #include "esp_vfs_fat.h"
 #include "sdmmc_cmd.h"
-#include "utils.h"
 
 #define MOUNT_POINT "/sdcard"
 

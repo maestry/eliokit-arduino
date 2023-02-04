@@ -7,7 +7,6 @@
 
 #include "accelGyro.h"
 
-#include "utils.h"
 #include "freertos/FreeRTOS.h"
 #include <string.h>
 
