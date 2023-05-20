@@ -21,13 +21,12 @@ void setup() {
     delay(1000);
   }
   Serial.println("Card inizializzata correttamente");
-  sdCardCreateWriteCloseFileS("prova","prova1.txt","buongiorno");
-  listDir("");
+  char data[] = "Demo text data";
+  sdCardCreateWriteCloseFile("folderName", "fileName", (uint8_t*) data, strlen(data));
+  //listDir("");
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Serial.println("Lista directory:");  
-  listDir("");
   delay(5000);
 }
