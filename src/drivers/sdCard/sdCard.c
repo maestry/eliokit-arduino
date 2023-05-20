@@ -81,6 +81,7 @@ uint8_t sdCardMountFileSystem(void)
 	printf("sdCard: Mounting filesystem \n");
 
 	spiPeripheralMasterTakeMutex();
+	gpioExpanderWriteSPICS(0);
 
 	err = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mountConfig, &card);
 
@@ -105,6 +106,7 @@ uint8_t sdCardMountFileSystem(void)
 	 }
 
 	spiPeripheralMasterGiveMutex();
+	gpioExpanderWriteSPICS(1);
 
 	return result;
 }
@@ -112,10 +114,12 @@ uint8_t sdCardMountFileSystem(void)
 void sdCardUnmountFileSystem(void)
 {
 	spiPeripheralMasterTakeMutex();
+	gpioExpanderWriteSPICS(0);
 
 	esp_vfs_fat_sdmmc_unmount();
 
 	spiPeripheralMasterGiveMutex();
+	gpioExpanderWriteSPICS(1);
 }
 
 uint8_t sdCardCreateWriteCloseFile(char* folder, char* name, uint8_t* data, uint32_t dataLength)
@@ -125,13 +129,14 @@ uint8_t sdCardCreateWriteCloseFile(char* folder, char* name, uint8_t* data, uint
 	char filePath[64] = {0};
 
 	spiPeripheralMasterTakeMutex();
+	gpioExpanderWriteSPICS(0);
 
 	strcat(filePath, MOUNT_POINT);
 	strcat(filePath, "/");
 	strcat(filePath, folder);
 	mkdir(filePath, 777);
 	strcat(filePath, "/");
-	replaceChar(name, ':', '-');
+	//replaceChar(name, ':', '-');
 	strcat(filePath, name);
 
 	printf("sdCardCreateWriteCloseFile \n");
@@ -146,7 +151,42 @@ uint8_t sdCardCreateWriteCloseFile(char* folder, char* name, uint8_t* data, uint
 	}else{
 		printf("error opening path: %s Data length %d\n", filePath, dataLength);
 	}
+	gpioExpanderWriteSPICS(1);
+	spiPeripheralMasterGiveMutex();
 
+	return result;
+}
+
+uint8_t sdCardAppendCloseFile(char* folder, char* name, uint8_t* data, uint32_t dataLength)
+{
+	uint8_t	result = 0;
+	FILE* f;
+	char filePath[64] = {0};
+
+	spiPeripheralMasterTakeMutex();
+	gpioExpanderWriteSPICS(0);
+
+	strcat(filePath, MOUNT_POINT);
+	strcat(filePath, "/");
+	strcat(filePath, folder);
+	mkdir(filePath, 777);
+	strcat(filePath, "/");
+	//replaceChar(name, ':', '-');
+	strcat(filePath, name);
+
+	printf("sdCardAppendCloseFile \n");
+
+	f = fopen(filePath, "a");
+	if (f != NULL)
+	{
+		result = 1;
+		fwrite(data, 1, dataLength, f);
+		fclose(f);
+		printf("Write file OK path: %s Data length %d\n", filePath, dataLength);
+	}else{
+		printf("error opening path: %s Data length %d\n", filePath, dataLength);
+	}
+	gpioExpanderWriteSPICS(1);
 	spiPeripheralMasterGiveMutex();
 
 	return result;

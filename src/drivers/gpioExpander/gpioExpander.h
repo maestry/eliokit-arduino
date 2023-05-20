@@ -12,6 +12,9 @@ void configGpioExpander(uint8_t i2cPort, uint8_t chipID, uint8_t port, uint8_t c
 uint8_t gpioExpanderReadVbusDet(void);
 uint8_t gpioExpanderReadVsunDet(void);
 
+uint8_t gpioExpanderReadButtonUp(void);
+uint8_t gpioExpanderReadButtonDown(void);
+
 // SPI sdCARD CD control
 void gpioExpanderWriteSPICS(uint8_t value);
 

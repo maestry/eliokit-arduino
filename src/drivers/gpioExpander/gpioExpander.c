@@ -76,6 +76,34 @@ uint8_t gpioExpanderReadVbusDet(void)
 	return value;
 }
 
+uint8_t gpioExpanderReadButtonUp(void)
+{
+	uint8_t value = 0;
+
+	XL9335ReadPort(I2C_0_MASTER_NUM, 0, 0, &value);
+
+	if (value & 0x08) // bit 5 port 0
+		value = 0;
+	else
+		value = 1;
+
+	return value;
+}
+
+uint8_t gpioExpanderReadButtonDown(void)
+{
+	uint8_t value = 0;
+
+	XL9335ReadPort(I2C_0_MASTER_NUM, 0, 0, &value);
+
+	if (value & 0x16) // bit 4 port 0
+		value = 0;
+	else
+		value = 1;
+
+	return value;
+}
+
 uint8_t gpioExpanderReadVsunDet(void)
 {
 	uint8_t value = 0;
