@@ -1,3 +1,4 @@
+#include "drivers/gpioExpander/PCAL9535A.h"
 extern "C" {
   #include "drivers/eInkDisplay/eInkDisplay.h"
   #include "drivers/gpioExpander/gpioExpander.h"
@@ -7,10 +8,9 @@ extern "C" {
   #include "drivers/accelGyro/accelGyro.h"
   #include "wireless_charger.h"
   #include "drivers/spi/spiPeripheral.h"
-  #include "driver/gpio.h"
   #include "drivers/touchButtonI2C/touchButton.h"
-  #include "driver/rmt.h"  
   #include "drivers/ir/ir_tools.h"
   #include "drivers/tvoc/tvoc.h"
-  
+  #include "drivers/humTemp/chips/AHTX0.h"
 }
+
