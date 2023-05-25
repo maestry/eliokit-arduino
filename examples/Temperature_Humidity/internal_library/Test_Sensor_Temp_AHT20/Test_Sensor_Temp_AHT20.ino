@@ -1,23 +1,23 @@
 #include <eliokit.h>
-
-AHTX0 aht;
+#include <Wire.h>
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Adafruit AHT10/AHT20 demo!");
+  Serial.println("AHT20 found");
+  i2cPeripheralInitCustomSpeed(I2C_0_MASTER_NUM, I2C_0_MASTER_FREQ_HZ);
+	i2cPeripheralInitCustomSpeed(I2C_1_MASTER_NUM, I2C_1_MASTER_FREQ_HZ);
+  spiPeripheralInit();
   Wire.begin(4,5);
-  if (! aht.begin()) {
-    Serial.println("Could not find AHT? Check wiring");
-    while (1) delay(10);
-  }
-  Serial.println("AHT10 or AHT20 found");
+  setAHT20Enable();
+  Serial.println("AHT20 found");
 }
 
 void loop() {
-  sensors_event_t humidity, temp;
-  aht.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
-  Serial.print("Temperature: "); Serial.print(temp.temperature); Serial.println(" degrees C");
-  Serial.print("Humidity: "); Serial.print(humidity.relative_humidity); Serial.println("% rH");
+  int32_t humidity, temp;
+  getAHT20HumTemp(&humidity, &temp);
+  
+  Serial.print("Temperature: "); Serial.print(temp); Serial.println(" degrees C");
+  Serial.print("Humidity: "); Serial.print(humidity); Serial.println("% rH");
 
   delay(500);
 }
