@@ -3,6 +3,7 @@ extern "C" {
   #include "drivers/eInkDisplay/eInkDisplay.h"
   #include "drivers/gpioExpander/gpioExpander.h"
   #include "drivers/gpioExpander/chips/XL9535.h"
+  #include "drivers/humTemp/chips/AHT20.h"
   #include "drivers/i2c/i2cPeripheral.h"
   #include "drivers/sdCard/sdCard.h"
   #include "drivers/accelGyro/accelGyro.h"
@@ -11,6 +12,4 @@ extern "C" {
   #include "drivers/touchButtonI2C/touchButton.h"
   #include "drivers/ir/ir_tools.h"
   #include "drivers/tvoc/tvoc.h"
-  #include "drivers/humTemp/chips/AHTX0.h"
 }
-
