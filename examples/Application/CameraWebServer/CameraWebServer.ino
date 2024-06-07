@@ -27,7 +27,7 @@
 //#define CAMERA_MODEL_ESP32_CAM_BOARD
 //#define CAMERA_MODEL_ESP32S2_CAM_BOARD
 //#define CAMERA_MODEL_ESP32S3_CAM_LCD
-#define CAMERA_MODEL_ELIOKIT
+#define CAMERA_MODEL_elioiot
 
 #include "camera_pins.h"
 

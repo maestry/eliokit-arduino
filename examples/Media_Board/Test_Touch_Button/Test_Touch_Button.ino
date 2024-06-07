@@ -1,4 +1,4 @@
-#include <eliokit.h>
+#include <elioiot.h>
 
 // IO boards
 #define XL9335_ADD						0x20

@@ -2,7 +2,7 @@
 #include "image.h"
 
 
-#include "eliokit.h"
+#include "elioiot.h"
 
 eInkDisplayHandler_t eInkDisplay;
 

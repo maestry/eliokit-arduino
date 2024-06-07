@@ -18,7 +18,7 @@
 #include <driver/i2s.h>
 #include "FS.h"
 #include "SD_MMC.h"
-#include "eliokit.h"
+#include "elioiot.h"
 
 // IO boards
 #define XL9335_ADD						0x20

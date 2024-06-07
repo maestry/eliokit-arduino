@@ -1,4 +1,4 @@
-#if defined(CAMERA_MODEL_ELIOKIT)
+#if defined(CAMERA_MODEL_elioiot)
 #define PWDN_GPIO_NUM    -1
 #define RESET_GPIO_NUM   -1
 #define XCLK_GPIO_NUM    14

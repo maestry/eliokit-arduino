@@ -1,4 +1,4 @@
-const int buzzer = 46; //buzzer to eliokit pin 46
+const int buzzer = 46; //buzzer to elioiot pin 46
 
 
 void setup(){

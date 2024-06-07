@@ -13,7 +13,7 @@
 #include "Arduino.h"
 #include "WiFi.h"
 #include "Audio.h"
-#include "eliokit.h"
+#include "elioiot.h"
 
 eInkDisplayHandler_t eInkDisplay;
 
