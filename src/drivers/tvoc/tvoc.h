@@ -9,4 +9,4 @@
 #include <stdio.h>
 #include <string.h>
 
-void tvocGetPPB(double* tvocPPB, uint8_t* dataValid);
+void tvocGetPPB(double *tvocPPB, uint8_t *dataValid);

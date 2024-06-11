@@ -9,11 +9,5 @@
 
 #include <stdlib.h>
 
-
-
-
-
-
-
 void touchButtonInit(void);
-int32_t touchButtonReadStatus(uint8_t* kStatus);
+int32_t touchButtonReadStatus(uint8_t *kStatus);

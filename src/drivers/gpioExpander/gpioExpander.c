@@ -4,17 +4,16 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 
-#define GPIO_EXPANDER_PORT0_DEFAULT_CONFIG	0xFA // 11111010
-#define GPIO_EXPANDER_PORT0_DEFAULT_OUT		0x01
-#define GPIO_EXPANDER_PORT1_DEFAULT_CONFIG	0x3F // 00111111
-#define GPIO_EXPANDER_PORT1_DEFAULT_OUT		0x80
+#define GPIO_EXPANDER_PORT0_DEFAULT_CONFIG 0xFA // 11111010
+#define GPIO_EXPANDER_PORT0_DEFAULT_OUT 0x01
+#define GPIO_EXPANDER_PORT1_DEFAULT_CONFIG 0x3F // 00111111
+#define GPIO_EXPANDER_PORT1_DEFAULT_OUT 0x80
 
-#define ESP_INTR_FLAG_DEFAULT 					0
+#define ESP_INTR_FLAG_DEFAULT 0
 
-static SemaphoreHandle_t 						analogMutex;
-static SemaphoreHandle_t 						irMutex;
-static SemaphoreHandle_t 						ledsVibMutex;
-
+static SemaphoreHandle_t analogMutex;
+static SemaphoreHandle_t irMutex;
+static SemaphoreHandle_t ledsVibMutex;
 
 void gpioExpanderInit(void)
 {
@@ -34,13 +33,13 @@ void configGpioExpander(uint8_t i2cPort, uint8_t chipID, uint8_t port, uint8_t c
 	XL9335WritePort(i2cPort, chipID, port, writeValue);
 }
 
-void gpioExpanderReadWCST(uint8_t* wcst0, uint8_t* wcst1)
+void gpioExpanderReadWCST(uint8_t *wcst0, uint8_t *wcst1)
 {
 	uint8_t value;
 
-	XL9335ReadPort(I2C_0_MASTER_NUM,0, 1, &value);
+	XL9335ReadPort(I2C_0_MASTER_NUM, 0, 1, &value);
 
-	if(wcst1 != NULL)
+	if (wcst1 != NULL)
 	{
 		if (value & 0x01)
 			*wcst1 = 1;
@@ -48,7 +47,7 @@ void gpioExpanderReadWCST(uint8_t* wcst0, uint8_t* wcst1)
 			*wcst1 = 0;
 	}
 
-	if(wcst0 != NULL)
+	if (wcst0 != NULL)
 	{
 		if (value & 0x02)
 			*wcst0 = 1;
@@ -122,7 +121,7 @@ uint8_t gpioExpanderReadVsunDet(void)
 void gpioExpanderSelectAnalogVBAT(void)
 {
 	xSemaphoreTake(analogMutex, portMAX_DELAY);
-	XL9335WritePortPin(I2C_0_MASTER_NUM,0, 0, 2, 0);
+	XL9335WritePortPin(I2C_0_MASTER_NUM, 0, 0, 2, 0);
 }
 
 void gpioExpanderDeselectAnalogVBAT(void)
@@ -133,7 +132,7 @@ void gpioExpanderDeselectAnalogVBAT(void)
 void gpioExpanderSelectAnIn(void)
 {
 	xSemaphoreTake(analogMutex, portMAX_DELAY);
-	XL9335WritePortPin(I2C_0_MASTER_NUM,0, 0, 2, 1);
+	XL9335WritePortPin(I2C_0_MASTER_NUM, 0, 0, 2, 1);
 }
 
 void gpioExpanderDeselectAnIn(void)

@@ -32,7 +32,8 @@ static const char *TAG = "rc5_parser";
 
 #define RC5_MAX_FRAME_RMT_WORDS (14) // S1+S2+T+ADDR(5)+CMD(6)
 
-typedef struct {
+typedef struct
+{
     ir_parser_t parent;
     uint32_t flags;
     uint32_t pulse_duration_ticks;
@@ -55,7 +56,8 @@ static esp_err_t rc5_parser_input(ir_parser_t *parser, void *raw_data, uint32_t 
     rc5_parser_t *rc5_parser = __containerof(parser, rc5_parser_t, parent);
     rc5_parser->buffer = raw_data;
     rc5_parser->buffer_len = length;
-    if (length > RC5_MAX_FRAME_RMT_WORDS) {
+    if (length > RC5_MAX_FRAME_RMT_WORDS)
+    {
         ret = ESP_FAIL;
     }
     return ret;
@@ -85,40 +87,52 @@ static esp_err_t rc5_parser_get_scan_code(ir_parser_t *parser, uint32_t *address
     bool exchange = false;
     rc5_parser_t *rc5_parser = __containerof(parser, rc5_parser_t, parent);
     RC5_CHECK(address && command && repeat, "address, command and repeat can't be null", out, ESP_ERR_INVALID_ARG);
-    for (int i = 0; i < rc5_parser->buffer_len; i++) {
-        if (rc5_duration_one_unit(rc5_parser, rc5_parser->buffer[i].duration0)) {
+    for (int i = 0; i < rc5_parser->buffer_len; i++)
+    {
+        if (rc5_duration_one_unit(rc5_parser, rc5_parser->buffer[i].duration0))
+        {
             parse_result <<= 1;
             parse_result |= exchange;
-            if (rc5_duration_two_unit(rc5_parser, rc5_parser->buffer[i].duration1)) {
+            if (rc5_duration_two_unit(rc5_parser, rc5_parser->buffer[i].duration1))
+            {
                 exchange = !exchange;
             }
-        } else if (rc5_duration_two_unit(rc5_parser, rc5_parser->buffer[i].duration0)) {
+        }
+        else if (rc5_duration_two_unit(rc5_parser, rc5_parser->buffer[i].duration0))
+        {
             parse_result <<= 1;
             parse_result |= rc5_parser->buffer[i].level0;
             parse_result <<= 1;
             parse_result |= !rc5_parser->buffer[i].level0;
-            if (rc5_duration_one_unit(rc5_parser, rc5_parser->buffer[i].duration1)) {
+            if (rc5_duration_one_unit(rc5_parser, rc5_parser->buffer[i].duration1))
+            {
                 exchange = !exchange;
             }
-        } else {
+        }
+        else
+        {
             goto out;
         }
     }
-    if (!(rc5_parser->flags & IR_TOOLS_FLAGS_INVERSE)) {
+    if (!(rc5_parser->flags & IR_TOOLS_FLAGS_INVERSE))
+    {
         parse_result = ~parse_result;
     }
     s1 = ((parse_result & 0x2000) >> 13) & 0x01;
     s2 = ((parse_result & 0x1000) >> 12) & 0x01;
     t = ((parse_result & 0x800) >> 11) & 0x01;
     // Check S1, must be 1
-    if (s1) {
-        if (!(rc5_parser->flags & IR_TOOLS_FLAGS_PROTO_EXT) && !s2) {
+    if (s1)
+    {
+        if (!(rc5_parser->flags & IR_TOOLS_FLAGS_PROTO_EXT) && !s2)
+        {
             // Not standard RC5 protocol, but S2 is 0
             goto out;
         }
         addr = (parse_result & 0x7C0) >> 6;
         cmd = (parse_result & 0x3F);
-        if (!s2) {
+        if (!s2)
+        {
             cmd |= 1 << 6;
         }
         *repeat = (t == rc5_parser->last_t_bit && addr == rc5_parser->last_address && cmd == rc5_parser->last_command);

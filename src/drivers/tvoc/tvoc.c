@@ -5,11 +5,10 @@
  *      Author: marcelo
  */
 
-
 #include "tvoc.h"
 #include "chips/ags10.h"
 
-void tvocGetPPB(double* tvocPPB, uint8_t* dataValid)
+void tvocGetPPB(double *tvocPPB, uint8_t *dataValid)
 {
 	uint32_t tvoc;
 	uint8_t preHeatStage;
@@ -17,14 +16,16 @@ void tvocGetPPB(double* tvocPPB, uint8_t* dataValid)
 
 	AGS10getTVOCppb(&tvoc, &preHeatStage, &crcError);
 
-	if(!preHeatStage && !crcError)
+	if (!preHeatStage && !crcError)
 	{
-		if(dataValid != NULL)
+		if (dataValid != NULL)
 			*dataValid = 1;
-	}else{
-		if(dataValid != NULL)
+	}
+	else
+	{
+		if (dataValid != NULL)
 			*dataValid = 0;
 	}
 
-	*tvocPPB = (double) tvoc;
+	*tvocPPB = (double)tvoc;
 }

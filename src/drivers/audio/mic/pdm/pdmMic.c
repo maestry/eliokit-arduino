@@ -3,9 +3,8 @@
 #include "driver/i2s.h"
 #include "esp_system.h"
 
-#define PDM_MIC_SAMPLE_RATE		16000
-#define PDM_MIC_I2S_CH 			0
-
+#define PDM_MIC_SAMPLE_RATE 16000
+#define PDM_MIC_I2S_CH 0
 
 void pdmMicInit(void) // Consumes 33284 bytes of memory!
 {
@@ -39,13 +38,5 @@ void pdmMicInit(void) // Consumes 33284 bytes of memory!
 
 void pdmMicRead(void *dest, size_t size, size_t *bytes_read)
 {
-	i2s_read(PDM_MIC_I2S_CH, dest, size, bytes_read, 1000 / portTICK_RATE_MS);
+    i2s_read(PDM_MIC_I2S_CH, dest, size, bytes_read, 1000 / portTICK_RATE_MS);
 }
-
-
-
-
-
-
-
-

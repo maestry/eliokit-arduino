@@ -33,4 +33,4 @@ void gpioExpanderSetStatusLedOn(void);
 void gpioExpanderSetStatusLedOff(void);
 
 // wireless charger chip
-void gpioExpanderReadWCST(uint8_t* wcst0, uint8_t* wcst1);
+void gpioExpanderReadWCST(uint8_t *wcst0, uint8_t *wcst1);

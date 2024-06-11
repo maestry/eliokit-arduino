@@ -33,7 +33,8 @@ static const char *TAG = "nec_parser";
 #define NEC_DATA_FRAME_RMT_WORDS (34)
 #define NEC_REPEAT_FRAME_RMT_WORDS (2)
 
-typedef struct {
+typedef struct
+{
     ir_parser_t parent;
     uint32_t flags;
     uint32_t leading_code_high_ticks;
@@ -92,14 +93,18 @@ static esp_err_t nec_parse_logic(ir_parser_t *parser, bool *logic)
     esp_err_t ret = ESP_FAIL;
     bool logic_value = false;
     nec_parser_t *nec_parser = __containerof(parser, nec_parser_t, parent);
-    if (nec_parse_logic0(nec_parser)) {
+    if (nec_parse_logic0(nec_parser))
+    {
         logic_value = false;
         ret = ESP_OK;
-    } else if (nec_parse_logic1(nec_parser)) {
+    }
+    else if (nec_parse_logic1(nec_parser))
+    {
         logic_value = true;
         ret = ESP_OK;
     }
-    if (ret == ESP_OK) {
+    if (ret == ESP_OK)
+    {
         *logic = logic_value;
     }
     nec_parser->cursor += 1;
@@ -124,11 +129,16 @@ static esp_err_t nec_parser_input(ir_parser_t *parser, void *raw_data, uint32_t 
     NEC_CHECK(raw_data, "input data can't be null", err, ESP_ERR_INVALID_ARG);
     nec_parser->buffer = raw_data;
     // Data Frame costs 34 items and Repeat Frame costs 2 items
-    if (length == NEC_DATA_FRAME_RMT_WORDS) {
+    if (length == NEC_DATA_FRAME_RMT_WORDS)
+    {
         nec_parser->repeat = false;
-    } else if (length == NEC_REPEAT_FRAME_RMT_WORDS) {
+    }
+    else if (length == NEC_REPEAT_FRAME_RMT_WORDS)
+    {
         nec_parser->repeat = true;
-    } else {
+    }
+    else
+    {
         ret = ESP_FAIL;
     }
     return ret;
@@ -144,22 +154,31 @@ static esp_err_t nec_parser_get_scan_code(ir_parser_t *parser, uint32_t *address
     bool logic_value = false;
     nec_parser_t *nec_parser = __containerof(parser, nec_parser_t, parent);
     NEC_CHECK(address && command && repeat, "address, command and repeat can't be null", out, ESP_ERR_INVALID_ARG);
-    if (nec_parser->repeat) {
-        if (nec_parse_repeat_frame(nec_parser)) {
+    if (nec_parser->repeat)
+    {
+        if (nec_parse_repeat_frame(nec_parser))
+        {
             *address = nec_parser->last_address;
             *command = nec_parser->last_command;
             *repeat = true;
             ret = ESP_OK;
         }
-    } else {
-        if (nec_parse_head(nec_parser)) {
-            for (int i = 0; i < 16; i++) {
-                if (nec_parse_logic(parser, &logic_value) == ESP_OK) {
+    }
+    else
+    {
+        if (nec_parse_head(nec_parser))
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                if (nec_parse_logic(parser, &logic_value) == ESP_OK)
+                {
                     addr |= (logic_value << i);
                 }
             }
-            for (int i = 0; i < 16; i++) {
-                if (nec_parse_logic(parser, &logic_value) == ESP_OK) {
+            for (int i = 0; i < 16; i++)
+            {
+                if (nec_parse_logic(parser, &logic_value) == ESP_OK)
+                {
                     cmd |= (logic_value << i);
                 }
             }
@@ -192,7 +211,8 @@ ir_parser_t *ir_parser_rmt_new_nec(const ir_parser_config_t *config)
     NEC_CHECK(nec_parser, "request memory for nec_parser failed", err, NULL);
 
     nec_parser->flags = config->flags;
-    if (config->flags & IR_TOOLS_FLAGS_INVERSE) {
+    if (config->flags & IR_TOOLS_FLAGS_INVERSE)
+    {
         nec_parser->inverse = true;
     }
 

@@ -1,10 +1,6 @@
 #include "spiPeripheral.h"
 
-
-
-SemaphoreHandle_t 	spiPeripheralMutex = NULL;
-
-
+SemaphoreHandle_t spiPeripheralMutex = NULL;
 
 void spiPeripheralInit(void)
 {

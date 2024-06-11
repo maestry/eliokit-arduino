@@ -2,13 +2,10 @@
 #include "../i2c/i2cPeripheral.h"
 
 // IO boards
-#define XL9335_ADD						0x20
+#define XL9335_ADD 0x20
 
 // Media board
-#define BS8112A_3_ADDRESS				0x50
-
-
-
+#define BS8112A_3_ADDRESS 0x50
 
 uint8_t boardDetectorDetectS3Board(void)
 {
@@ -34,9 +31,6 @@ uint8_t boardI2CScan(uint8_t i2cNum)
 	return result;
 }
 
-
-
-
 uint8_t boardDetectorDetectMediaBoard(void)
 {
 	uint8_t result = 0;
@@ -47,11 +41,8 @@ uint8_t boardDetectorDetectMediaBoard(void)
 		result = 1;
 	}
 
-
 	return result;
 }
-
-
 
 uint8_t boardDetectorDetectIOBoards(void)
 {
@@ -67,7 +58,3 @@ uint8_t boardDetectorDetectIOBoards(void)
 
 	return result;
 }
-
-
-
-

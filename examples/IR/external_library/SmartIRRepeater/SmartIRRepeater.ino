@@ -58,8 +58,7 @@
 
 // ==================== start of TUNEABLE PARAMETERS ====================
 
-const uint16_t kRecvPin = 16;  // 14 on a ESP32-C3 causes a boot loop.
-
+const uint16_t kRecvPin = 16; // 14 on a ESP32-C3 causes a boot loop.
 
 // GPIO to use to control the IR LED circuit. Recommended: 4 (D2).
 const uint16_t kIrLedPin = 45;
@@ -70,14 +69,14 @@ const uint32_t kBaudRate = 115200;
 
 // As this program is a special purpose capture/resender, let's use a larger
 // than expected buffer so we can handle very large IR messages.
-const uint16_t kCaptureBufferSize = 1024;  // 1024 == ~511 bits
+const uint16_t kCaptureBufferSize = 1024; // 1024 == ~511 bits
 
 // kTimeout is the Nr. of milli-Seconds of no-more-data before we consider a
 // message ended.
-const uint8_t kTimeout = 50;  // Milli-Seconds
+const uint8_t kTimeout = 50; // Milli-Seconds
 
 // kFrequency is the modulation frequency all UNKNOWN messages will be sent at.
-const uint16_t kFrequency = 38000;  // in Hz. e.g. 38kHz.
+const uint16_t kFrequency = 38000; // in Hz. e.g. 38kHz.
 
 // ==================== end of TUNEABLE PARAMETERS ====================
 
@@ -89,12 +88,13 @@ IRrecv irrecv(kRecvPin, kCaptureBufferSize, kTimeout, false);
 decode_results results;
 
 // This section of code runs only once at start-up.
-void setup() {
-  irrecv.enableIRIn();  // Start up the IR receiver.
-  irsend.begin();       // Start up the IR sender.
+void setup()
+{
+  irrecv.enableIRIn(); // Start up the IR receiver.
+  irsend.begin();      // Start up the IR sender.
 
   Serial.begin(kBaudRate);
-  while (!Serial)  // Wait for the serial connection to be establised.
+  while (!Serial) // Wait for the serial connection to be establised.
     delay(50);
   Serial.println();
 
@@ -106,33 +106,35 @@ void setup() {
 }
 
 // The repeating section of the code
-void loop() {
+void loop()
+{
   // Check if an IR message has been received.
-  if (irrecv.decode(&results)) {  // We have captured something.
+  if (irrecv.decode(&results))
+  { // We have captured something.
     // The capture has stopped at this point.
     decode_type_t protocol = results.decode_type;
     uint16_t size = results.bits;
     bool success = true;
     // Is it a protocol we don't understand?
-    //if (protocol == decode_type_t::UNKNOWN) {  // Yes.
-      // Convert the results into an array suitable for sendRaw().
-      // resultToRawArray() allocates the memory we need for the array.
-      uint16_t *raw_array = resultToRawArray(&results);
-      // Find out how many elements are in the array.
-      size = getCorrectedRawLength(&results);
-      // Send it out via the IR LED circuit.
-      irsend.sendRaw(raw_array, size, kFrequency);
-      // SEND_RAW
-      // Deallocate the memory allocated by resultToRawArray().
-      delete [] raw_array;
-      /*
-    } else if (hasACState(protocol)) {  // Does the message require a state[]?
-      // It does, so send with bytes instead.
-      success = irsend.send(protocol, results.state, size / 8);
-    } else {  // Anything else must be a simple message protocol. ie. <= 64 bits
-      success = irsend.send(protocol, results.value, size);
-    }
-    */
+    // if (protocol == decode_type_t::UNKNOWN) {  // Yes.
+    // Convert the results into an array suitable for sendRaw().
+    // resultToRawArray() allocates the memory we need for the array.
+    uint16_t *raw_array = resultToRawArray(&results);
+    // Find out how many elements are in the array.
+    size = getCorrectedRawLength(&results);
+    // Send it out via the IR LED circuit.
+    irsend.sendRaw(raw_array, size, kFrequency);
+    // SEND_RAW
+    // Deallocate the memory allocated by resultToRawArray().
+    delete[] raw_array;
+    /*
+  } else if (hasACState(protocol)) {  // Does the message require a state[]?
+    // It does, so send with bytes instead.
+    success = irsend.send(protocol, results.state, size / 8);
+  } else {  // Anything else must be a simple message protocol. ie. <= 64 bits
+    success = irsend.send(protocol, results.value, size);
+  }
+  */
     // Resume capturing IR messages. It was not restarted until after we sent
     // the message so we didn't capture our own message.
     irrecv.resume();
@@ -144,5 +146,5 @@ void loop() {
         now / 1000, now % 1000, size, typeToString(protocol).c_str(),
         success ? "" : "un");
   }
-  yield();  // Or delay(milliseconds); This ensures the ESP doesn't WDT reset.
+  yield(); // Or delay(milliseconds); This ensures the ESP doesn't WDT reset.
 }
