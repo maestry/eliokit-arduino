@@ -1,4 +1,5 @@
-
+#ifndef ELIOIOTBOARD_H
+#define ELIOIOTBOARD_H
 class IOExpander
 {
 public:
@@ -311,13 +312,4 @@ public:
   }
 };
 
-int main()
-{
-  Elioboard elioboard;
-  elioboard.demo.ioExpander.A0;
-
-  return 0;
-};
-
-
-
+#endif

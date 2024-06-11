@@ -21,29 +21,12 @@ For any questions or problems related to using the elioiot library, please visit
 
 ## Example Code
 
-Here is an example code that shows how to use the elioiot library to turn on and off the vibration motor:
+Here is an example code that shows how to use the elioiot library to read all value of the board:
 
 ```js
 #include "elioiot.h"
 
-// Vibration Motor address
-#define XL9335_ADD						0x20
 
-void setup() {
-  Serial.begin(115200);
-  i2cPeripheralInitCustomSpeed(I2C_0_MASTER_NUM, I2C_0_MASTER_FREQ_HZ);
-  i2cPeripheralInitCustomSpeed(I2C_1_MASTER_NUM, I2C_1_MASTER_FREQ_HZ);
-  gpioExpanderInit();
-  spiPeripheralInit();
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  gpioExpanderSetVibrationMotorOn();
-  delay(1000);
-  gpioExpanderSetVibrationMotorOff();
-  delay(5000);
-}
 
 ```
 
