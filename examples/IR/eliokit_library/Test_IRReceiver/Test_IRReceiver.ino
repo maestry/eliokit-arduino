@@ -1,33 +1,33 @@
-#include "eliokit.h"
+#include "elioiot.h"
 
 size_t length = 0;
 rmt_item32_t *items = NULL;
 
 static RingbufHandle_t ringbufHandle = NULL;
 
-void setup() {
-  // put your setup code here, to run once:
-  IRReceiverInit();
+void setup()
+{
+	// put your setup code here, to run once:
+	IRReceiverInit();
 }
 
-void loop() {
-  size_t length = 0;
-  rmt_item32_t *items = NULL;
-  items = (rmt_item32_t *) xRingbufferReceive(ringbufHandle, &length, portMAX_DELAY);
+void loop()
+{
+	size_t length = 0;
+	rmt_item32_t *items = NULL;
+	items = (rmt_item32_t *)xRingbufferReceive(ringbufHandle, &length, portMAX_DELAY);
 
 	prepareIRDataToTX(items, length);
 
 	printf("IR RX data length %d \n", length);
 	printf("Values: \n");
-	for (int i = 0; i < (length/4) ; i++)
+	for (int i = 0; i < (length / 4); i++)
 	{
-			printf("{.val=0x%04x},", items[i].val);
+		printf("{.val=0x%04x},", items[i].val);
 	}
 	printf("\n");
 
-
-
-	vRingbufferReturnItem(ringbufHandle, (void *) items);
+	vRingbufferReturnItem(ringbufHandle, (void *)items);
 }
 
 static void IRReceiverInit(void)
@@ -53,7 +53,7 @@ static void IRReceiverInit(void)
 		printf("rmt_rx_start failed %d \n", err);
 }
 
-static void prepareIRDataToTX(rmt_item32_t* items, uint32_t itemsCount)
+static void prepareIRDataToTX(rmt_item32_t *items, uint32_t itemsCount)
 {
 	rmt_item32_t temp;
 

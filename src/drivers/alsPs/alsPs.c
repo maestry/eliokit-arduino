@@ -5,7 +5,6 @@
  *      Author: marcelo
  */
 
-
 #include "alsPs.h"
 
 #include <drivers/alsPs/chips/LTR553ALS.h>
@@ -13,8 +12,7 @@
 #include "drivers/i2c/i2cPeripheral.h"
 #include "drivers/boards/s3_bsp.h"
 
-
-#define WRITE_BUF_LENGTH	16
+#define WRITE_BUF_LENGTH 16
 
 static uint8_t write_buf[WRITE_BUF_LENGTH];
 
@@ -24,27 +22,27 @@ static void setPSLEDRegister(LTR553PSLEDRegister_t LTR553PSLEDRegister);
 static void setPSMEASRATERegister(LTR553PSMEASRATERegister_t LTR553PSMEASRATERegister);
 static void setALSMEASRATERegister(LTR553ALSMEASRATERegister_t LTR553ALSMEASRATERegister);
 static void setALSControlRegister(LTR553ALSControlRegister_t LTR553ALSControlRegister);
-static void getALSCH0andCH1RawValues(double* ch1Raw, double* ch0Raw);
-static void getPSADCRawValue(double* psADCRawValue);
-static void getALSPSStatusRegister(LTR553StatusRegister_t* LTR553StatusRegister);
+static void getALSCH0andCH1RawValues(double *ch1Raw, double *ch0Raw);
+static void getPSADCRawValue(double *psADCRawValue);
+static void getALSPSStatusRegister(LTR553StatusRegister_t *LTR553StatusRegister);
 static void setInterruptRegister(LTR553InterruptRegister_t LTR553InterruptRegister);
 
 void ALSPSInit(void) // user need wait almost 10ms after init, gain set to 1X
 {
-	LTR553InterruptRegister_t 	LTR553InterruptRegister;
-	LTR553PSLEDRegister_t		LTR553PSLEDRegister;
-	LTR553PSMEASRATERegister_t	LTR553PSMEASRATERegister;
-	LTR553ALSMEASRATERegister_t	LTR553ALSMEASRATERegister;
+	LTR553InterruptRegister_t LTR553InterruptRegister;
+	LTR553PSLEDRegister_t LTR553PSLEDRegister;
+	LTR553PSMEASRATERegister_t LTR553PSMEASRATERegister;
+	LTR553ALSMEASRATERegister_t LTR553ALSMEASRATERegister;
 
 	// configure interrupts
-	LTR553InterruptRegister.value = 0;  // Interrupt pin is INACTIVE / high impedance state
+	LTR553InterruptRegister.value = 0; // Interrupt pin is INACTIVE / high impedance state
 	setInterruptRegister(LTR553InterruptRegister);
 
 	// set PS led configuration
 	LTR553PSLEDRegister.value = 0;
-	LTR553PSLEDRegister.LEDCurrent = 4; // 100mA
+	LTR553PSLEDRegister.LEDCurrent = 4;		// 100mA
 	LTR553PSLEDRegister.LEDCurrentDuty = 3; // 100%
-	LTR553PSLEDRegister.LEDPMF = 3; // 60Khz
+	LTR553PSLEDRegister.LEDPMF = 3;			// 60Khz
 	setPSLEDRegister(LTR553PSLEDRegister);
 
 	// set PS measurement rate
@@ -55,23 +53,23 @@ void ALSPSInit(void) // user need wait almost 10ms after init, gain set to 1X
 	// set ALS measurement rate
 	LTR553ALSMEASRATERegister.value = 0;
 	LTR553ALSMEASRATERegister.ALSMeasRate = 3; // 500ms
-	LTR553ALSMEASRATERegister.ALsIntTime = 0; // 100ms
+	LTR553ALSMEASRATERegister.ALsIntTime = 0;  // 100ms
 	setALSMEASRATERegister(LTR553ALSMEASRATERegister);
 }
 
-void ALSPSGetLightValues(double* visiblePlusIR, double* IR)
+void ALSPSGetLightValues(double *visiblePlusIR, double *IR)
 {
 	getALSCH0andCH1RawValues(IR, visiblePlusIR);
 }
 
-void ALSPSGetPSValue(double* ps)
+void ALSPSGetPSValue(double *ps)
 {
 	getPSADCRawValue(ps);
 }
 
 void ALSPSEnableALS(void)
 {
-	LTR553ALSControlRegister_t	LTR553ALSControlRegister;
+	LTR553ALSControlRegister_t LTR553ALSControlRegister;
 
 	// set ALS active mode
 	LTR553ALSControlRegister.value = 0;
@@ -83,7 +81,7 @@ void ALSPSEnableALS(void)
 
 void ALSPSDisableALS(void)
 {
-	LTR553ALSControlRegister_t	LTR553ALSControlRegister;
+	LTR553ALSControlRegister_t LTR553ALSControlRegister;
 
 	// set ALS active mode
 	LTR553ALSControlRegister.value = 0;
@@ -95,7 +93,7 @@ void ALSPSDisableALS(void)
 
 void ALSPSEnablePS(void)
 {
-	LTR553PSControlRegister_t	LTR553PSControlRegister;
+	LTR553PSControlRegister_t LTR553PSControlRegister;
 
 	// set PS active mode
 	LTR553PSControlRegister.value = 0;
@@ -106,7 +104,7 @@ void ALSPSEnablePS(void)
 
 void ALSPSDisablePS(void)
 {
-	LTR553PSControlRegister_t	LTR553PSControlRegister;
+	LTR553PSControlRegister_t LTR553PSControlRegister;
 
 	// set PS active mode
 	LTR553PSControlRegister.value = 0;
@@ -115,25 +113,28 @@ void ALSPSDisablePS(void)
 	setPSControlRegister(LTR553PSControlRegister);
 }
 
-
-void ALSPSCheckInterrupt(double* visiblePlusIR, double* IR, uint8_t* ALSDataValid, double* ps, uint8_t* PSDataValid)
+void ALSPSCheckInterrupt(double *visiblePlusIR, double *IR, uint8_t *ALSDataValid, double *ps, uint8_t *PSDataValid)
 {
 	LTR553StatusRegister_t LTR553StatusRegister;
 
 	getALSPSStatusRegister(&LTR553StatusRegister);
 
-	if(LTR553StatusRegister.ALSInterruptStatus && LTR553StatusRegister.ALSDataValid)
+	if (LTR553StatusRegister.ALSInterruptStatus && LTR553StatusRegister.ALSDataValid)
 	{
 		getALSCH0andCH1RawValues(IR, visiblePlusIR);
 		*ALSDataValid = 1;
-	}else{
+	}
+	else
+	{
 		*ALSDataValid = 0;
 	}
-	if(LTR553StatusRegister.PSInterruptStatus)
+	if (LTR553StatusRegister.PSInterruptStatus)
 	{
 		getPSADCRawValue(ps);
 		*PSDataValid = 1;
-	}else{
+	}
+	else
+	{
 		*PSDataValid = 0;
 	}
 }
@@ -141,7 +142,7 @@ void ALSPSCheckInterrupt(double* visiblePlusIR, double* IR, uint8_t* ALSDataVali
 static void setALSIntegrationMeasurementRate(void)
 {
 	write_buf[0] = LTR553_ALS_MEAS_RATE;
-	write_buf[1] = 0x03; //100mS integration, 500mS measurement rate
+	write_buf[1] = 0x03; // 100mS integration, 500mS measurement rate
 
 	i2cPeripheralMasterWriteToDevice(I2C_0_MASTER_NUM, LTR553_ADDR, write_buf, 2, I2C_0_MASTER_TIMEOUT_MS / portTICK_RATE_MS, 1);
 }
@@ -188,7 +189,7 @@ static void setALSMEASRATERegister(LTR553ALSMEASRATERegister_t LTR553ALSMEASRATE
 	i2cPeripheralMasterWriteToDevice(I2C_0_MASTER_NUM, LTR553_ADDR, write_buf, 2, I2C_0_MASTER_TIMEOUT_MS / portTICK_RATE_MS, 1);
 }
 
-static void getALSCH0andCH1RawValues(double* ch1Raw, double* ch0Raw)
+static void getALSCH0andCH1RawValues(double *ch1Raw, double *ch0Raw)
 {
 	uint8_t ch1_0, ch1_1, ch0_0, ch0_1, regAddress; // channel 1 IR, channel 0 vis+IR
 
@@ -208,7 +209,7 @@ static void getALSCH0andCH1RawValues(double* ch1Raw, double* ch0Raw)
 	*ch0Raw = (uint16_t)((ch0_1 << 8) | ch0_0);
 }
 
-static void getPSADCRawValue(double* psADCRawValue)
+static void getPSADCRawValue(double *psADCRawValue)
 {
 	uint8_t regAddress, data0, data1;
 
@@ -221,7 +222,7 @@ static void getPSADCRawValue(double* psADCRawValue)
 	*psADCRawValue = (uint16_t)((data1 << 8) | data0);
 }
 
-static void getALSPSStatusRegister(LTR553StatusRegister_t* LTR553StatusRegister)
+static void getALSPSStatusRegister(LTR553StatusRegister_t *LTR553StatusRegister)
 {
 	uint8_t regAddress;
 

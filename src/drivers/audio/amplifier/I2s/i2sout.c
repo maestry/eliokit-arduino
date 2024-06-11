@@ -4,9 +4,8 @@
 #include "driver/i2s.h"
 #include "esp_system.h"
 
-#define I2S_OUT_SAMPLE_RATE		16000
-#define I2S_OUT_I2S_CH 			1
-
+#define I2S_OUT_SAMPLE_RATE 16000
+#define I2S_OUT_I2S_CH 1
 
 void i2sOutInit(void) // Consumes 33284 bytes of memory!
 {

@@ -1,96 +1,92 @@
 #include <Wire.h>
- 
- 
+
 void setup()
 {
 
- 
   Serial.begin(9600);
-  while (!Serial);             
+  while (!Serial)
+    ;
   Serial.println("\nI2C Scanner");
 }
- 
- 
+
 void loop()
 {
   byte error, address;
   int nDevices;
-  Wire.begin(4,5);
+  Wire.begin(4, 5);
   delay(1000);
   Serial.println("Scanning on SDA=4 SCL=5 ...");
-  
+
   nDevices = 0;
-  for(address = 1; address < 127; address++ )
+  for (address = 1; address < 127; address++)
   {
     // The i2c_scanner uses the return value of
     // the Write.endTransmisstion to see if
     // a device did acknowledge to the address.
     Wire.beginTransmission(address);
     error = Wire.endTransmission();
- 
+
     if (error == 0)
     {
       Serial.print("I2C device found at address 0x");
-      if (address<16)
+      if (address < 16)
         Serial.print("0");
-      Serial.print(address,HEX);
+      Serial.print(address, HEX);
       Serial.println("  !");
- 
+
       nDevices++;
     }
-    else if (error==4)
+    else if (error == 4)
     {
       Serial.print("Unknown error at address 0x");
-      if (address<16)
+      if (address < 16)
         Serial.print("0");
-      Serial.println(address,HEX);
-    }    
+      Serial.println(address, HEX);
+    }
   }
   if (nDevices == 0)
     Serial.println("No I2C devices found\n");
   else
     Serial.println("done\n");
- 
-  delay(1000);           // wait 5 seconds for next scan
+
+  delay(1000); // wait 5 seconds for next scan
 
   Wire.end();
-  Wire.begin(2,44);
+  Wire.begin(2, 44);
   delay(1000);
   Serial.println("Scanning on SDA=2 SCL=44 ...");
-  
+
   nDevices = 0;
-  for(address = 1; address < 127; address++ )
+  for (address = 1; address < 127; address++)
   {
     // The i2c_scanner uses the return value of
     // the Write.endTransmisstion to see if
     // a device did acknowledge to the address.
     Wire.beginTransmission(address);
     error = Wire.endTransmission();
- 
+
     if (error == 0)
     {
       Serial.print("I2C device found at address 0x");
-      if (address<16)
+      if (address < 16)
         Serial.print("0");
-      Serial.print(address,HEX);
+      Serial.print(address, HEX);
       Serial.println("  !");
- 
+
       nDevices++;
     }
-    else if (error==4)
+    else if (error == 4)
     {
       Serial.print("Unknown error at address 0x");
-      if (address<16)
+      if (address < 16)
         Serial.print("0");
-      Serial.println(address,HEX);
-    }    
+      Serial.println(address, HEX);
+    }
   }
   if (nDevices == 0)
     Serial.println("No I2C devices found\n");
   else
     Serial.println("done\n");
   Wire.end();
-  delay(50000);           // wait 5 seconds for next scan
-
+  delay(50000); // wait 5 seconds for next scan
 }
-

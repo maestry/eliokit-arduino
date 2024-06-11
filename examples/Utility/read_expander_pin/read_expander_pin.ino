@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include "eliokit.h"
+#include "elioiot.h"
 
 PCAL9535A::PCAL9535A<TwoWire> gpio(Wire);
   

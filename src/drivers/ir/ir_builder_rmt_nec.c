@@ -29,7 +29,8 @@ static const char *TAG = "nec_builder";
         }                                                                         \
     } while (0)
 
-typedef struct {
+typedef struct
+{
     ir_builder_t parent;
     uint32_t buffer_size;
     uint32_t cursor;
@@ -99,7 +100,8 @@ static esp_err_t nec_build_frame(ir_builder_t *builder, uint32_t address, uint32
 {
     esp_err_t ret = ESP_OK;
     nec_builder_t *nec_builder = __containerof(builder, nec_builder_t, parent);
-    if (!nec_builder->flags & IR_TOOLS_FLAGS_PROTO_EXT) {
+    if (!nec_builder->flags & IR_TOOLS_FLAGS_PROTO_EXT)
+    {
         uint8_t low_byte = address & 0xFF;
         uint8_t high_byte = (address >> 8) & 0xFF;
         NEC_CHECK(low_byte == (~high_byte & 0xFF), "address not match standard NEC protocol", err, ESP_ERR_INVALID_ARG);
@@ -109,17 +111,25 @@ static esp_err_t nec_build_frame(ir_builder_t *builder, uint32_t address, uint32
     }
     builder->make_head(builder);
     // LSB -> MSB
-    for (int i = 0; i < 16; i++) {
-        if (address & (1 << i)) {
+    for (int i = 0; i < 16; i++)
+    {
+        if (address & (1 << i))
+        {
             builder->make_logic1(builder);
-        } else {
+        }
+        else
+        {
             builder->make_logic0(builder);
         }
     }
-    for (int i = 0; i < 16; i++) {
-        if (command & (1 << i)) {
+    for (int i = 0; i < 16; i++)
+    {
+        if (command & (1 << i))
+        {
             builder->make_logic1(builder);
-        } else {
+        }
+        else
+        {
             builder->make_logic0(builder);
         }
     }
@@ -173,7 +183,8 @@ ir_builder_t *ir_builder_rmt_new_nec(const ir_builder_config_t *config)
 
     nec_builder->buffer_size = config->buffer_size;
     nec_builder->flags = config->flags;
-    if (config->flags & IR_TOOLS_FLAGS_INVERSE) {
+    if (config->flags & IR_TOOLS_FLAGS_INVERSE)
+    {
         nec_builder->inverse = true;
     }
 

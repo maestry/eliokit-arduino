@@ -10,7 +10,7 @@
 #include "freertos/task.h"
 #include "chips/SHT40.h"
 
-void humTempGetMeasure(double* temperature, double* humidity)
+void humTempGetMeasure(double *temperature, double *humidity)
 {
 	SHT40StartMeasure();
 	vTaskDelay(20 / portTICK_RATE_MS);

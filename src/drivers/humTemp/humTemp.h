@@ -7,5 +7,4 @@
 
 #pragma once
 
-
-void humTempGetMeasure(double* temperature, double* humidity);
+void humTempGetMeasure(double *temperature, double *humidity);

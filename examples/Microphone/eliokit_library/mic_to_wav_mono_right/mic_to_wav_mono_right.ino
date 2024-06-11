@@ -8,7 +8,7 @@
     LR   - not connected to ESP32. Microphone has internal pull-down to GND for this pin. */
 
 // uncomment to demonstrate that valid wav files are being generated
-//#define GENERATE_DEMO_WAV
+// #define GENERATE_DEMO_WAV
 
 // Raw PCM data is inside the header
 #ifdef GENERATE_DEMO_WAV
@@ -18,37 +18,38 @@
 #include <driver/i2s.h>
 #include "FS.h"
 #include "SD_MMC.h"
-#include "eliokit.h"
+#include "elioiot.h"
 
 // IO boards
-#define XL9335_ADD						0x20
+#define XL9335_ADD 0x20
 
 // I2S perhiperhal number
-#define I2S_CHANNEL                 I2S_NUM_0 // I2S_NUM_1 doesn't support PDM
+#define I2S_CHANNEL I2S_NUM_0 // I2S_NUM_1 doesn't support PDM
 
 // I2S pins
-#define I2S_PIN_BIT_CLOCK           I2S_PIN_NO_CHANGE  // not used
-#define I2S_PIN_WORD_SELECT         42
-#define I2S_PIN_DATA_OUT            I2S_PIN_NO_CHANGE  // not used
-#define I2S_PIN_DATA_IN             43
+#define I2S_PIN_BIT_CLOCK I2S_PIN_NO_CHANGE // not used
+#define I2S_PIN_WORD_SELECT 42
+#define I2S_PIN_DATA_OUT I2S_PIN_NO_CHANGE // not used
+#define I2S_PIN_DATA_IN 43
 
 // I2S CONFIG PARAMS
-#define I2S_MODE                    (I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM)
-#define I2S_SAMPLE_RATE             8000
-#define I2S_BITS_PER_SAMPLE         I2S_BITS_PER_SAMPLE_16BIT
-#define I2S_CHANNEL_FMT             I2S_CHANNEL_FMT_ONLY_RIGHT
-#define I2S_COMM_FMT                I2S_COMM_FORMAT_PCM
-#define I2S_INTERRUPT_PRIO          ESP_INTR_FLAG_LEVEL1
-#define I2S_DMA_BUF_COUNT           4
-#define I2S_DMA_BUF_SIZE            1000
-#define I2S_ENABLE_ACCURATE_CLK     true
+#define I2S_MODE (I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM)
+#define I2S_SAMPLE_RATE 8000
+#define I2S_BITS_PER_SAMPLE I2S_BITS_PER_SAMPLE_16BIT
+#define I2S_CHANNEL_FMT I2S_CHANNEL_FMT_ONLY_RIGHT
+#define I2S_COMM_FMT I2S_COMM_FORMAT_PCM
+#define I2S_INTERRUPT_PRIO ESP_INTR_FLAG_LEVEL1
+#define I2S_DMA_BUF_COUNT 4
+#define I2S_DMA_BUF_SIZE 1000
+#define I2S_ENABLE_ACCURATE_CLK true
 
-bool I2S_Init() {
+bool I2S_Init()
+{
   i2s_config_t i2s_config;
   memset(&i2s_config, 0, sizeof(i2s_config));
 
   i2s_config.mode = (i2s_mode_t)I2S_MODE;
-  i2s_config.sample_rate =  I2S_SAMPLE_RATE;
+  i2s_config.sample_rate = I2S_SAMPLE_RATE;
   i2s_config.bits_per_sample = I2S_BITS_PER_SAMPLE;
   i2s_config.channel_format = I2S_CHANNEL_FMT;
   i2s_config.communication_format = (i2s_comm_format_t)I2S_COMM_FMT;
@@ -57,37 +58,41 @@ bool I2S_Init() {
   i2s_config.dma_buf_len = I2S_DMA_BUF_SIZE;
   i2s_config.use_apll = I2S_ENABLE_ACCURATE_CLK;
 
-
   i2s_pin_config_t pins = {
-    .bck_io_num = I2S_PIN_BIT_CLOCK,
-    .ws_io_num =  I2S_PIN_WORD_SELECT,
-    .data_out_num = I2S_PIN_DATA_OUT,
-    .data_in_num = I2S_PIN_DATA_IN
-  };
+      .bck_io_num = I2S_PIN_BIT_CLOCK,
+      .ws_io_num = I2S_PIN_WORD_SELECT,
+      .data_out_num = I2S_PIN_DATA_OUT,
+      .data_in_num = I2S_PIN_DATA_IN};
 
-  if (i2s_driver_install(I2S_CHANNEL, &i2s_config, 0, NULL) != ESP_OK) {
+  if (i2s_driver_install(I2S_CHANNEL, &i2s_config, 0, NULL) != ESP_OK)
+  {
     Serial.println("i2s_driver_install() error");
     return false;
   }
 
-  if (i2s_set_pin(I2S_NUM_0, &pins) != ESP_OK) {
+  if (i2s_set_pin(I2S_NUM_0, &pins) != ESP_OK)
+  {
     Serial.println("i2s_set_pin() error");
     return false;
   }
 }
 
-void I2S_Quit() {
-  if (i2s_driver_uninstall(I2S_CHANNEL) != ESP_OK) {
+void I2S_Quit()
+{
+  if (i2s_driver_uninstall(I2S_CHANNEL) != ESP_OK)
+  {
     Serial.println("i2s_driver_uninstall() error");
   }
 }
 
 // Create a file and add wav header to it so we can play it from PC later
-bool create_wav_file(char* song_name, uint32_t duration, uint16_t num_channels, const uint32_t sampling_rate, uint16_t bits_per_sample) {
+bool create_wav_file(char *song_name, uint32_t duration, uint16_t num_channels, const uint32_t sampling_rate, uint16_t bits_per_sample)
+{
   // data size in bytes - > this amount of data should be recorded from microphone later
   uint32_t data_size = sampling_rate * num_channels * bits_per_sample * duration / 8;
 
-  while (!sdCardMountFileSystem()) {
+  while (!sdCardMountFileSystem())
+  {
     Serial.println("Card Mount Failed");
     return false;
   }
@@ -139,17 +144,19 @@ bool create_wav_file(char* song_name, uint32_t duration, uint16_t num_channels, 
   return true;
 }
 
-void microphone_record(char* song_name, uint32_t duration) {
+void microphone_record(char *song_name, uint32_t duration)
+{
   // Add wav header to the file so we can play it from PC later
   // Mono
-  if (!create_wav_file(song_name, duration, 1, I2S_SAMPLE_RATE, I2S_BITS_PER_SAMPLE)) {
+  if (!create_wav_file(song_name, duration, 1, I2S_SAMPLE_RATE, I2S_BITS_PER_SAMPLE))
+  {
     Serial.println("Error during wav header creation");
     return;
   }
 
   // Buffer to receive data from microphone
   const size_t BUFFER_SIZE = 500;
-  uint8_t* buf = (uint8_t*)malloc(BUFFER_SIZE);
+  uint8_t *buf = (uint8_t *)malloc(BUFFER_SIZE);
 
   // Initialize I2S
   I2S_Init();
@@ -161,19 +168,23 @@ void microphone_record(char* song_name, uint32_t duration) {
   uint32_t counter = 0;
   uint32_t bytes_written;
   Serial.println("Recording started");
-  while (counter != data_size) {
+  while (counter != data_size)
+  {
     // Check for file size overflow
-    if (counter > data_size) {
+    if (counter > data_size)
+    {
       Serial.println("File is corrupted. data_size must be multiple of BUFFER_SIZE. Please modify BUFFER_SIZE");
       break;
     }
 
     // Read data from microphone
-    if (i2s_read(I2S_CHANNEL, buf, BUFFER_SIZE, &bytes_written, portMAX_DELAY) != ESP_OK) {
+    if (i2s_read(I2S_CHANNEL, buf, BUFFER_SIZE, &bytes_written, portMAX_DELAY) != ESP_OK)
+    {
       Serial.println("i2s_read() error");
     }
 
-    if(bytes_written != BUFFER_SIZE) {
+    if (bytes_written != BUFFER_SIZE)
+    {
       Serial.println("Bytes written error");
     }
 
@@ -189,21 +200,23 @@ void microphone_record(char* song_name, uint32_t duration) {
   free(buf);
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   delay(1000);
 
   i2cPeripheralInitCustomSpeed(I2C_0_MASTER_NUM, I2C_0_MASTER_FREQ_HZ);
-	i2cPeripheralInitCustomSpeed(I2C_1_MASTER_NUM, I2C_1_MASTER_FREQ_HZ);
+  i2cPeripheralInitCustomSpeed(I2C_1_MASTER_NUM, I2C_1_MASTER_FREQ_HZ);
   gpioExpanderInit();
   spiPeripheralInit();
-  while (!sdCardBusInit()) {
+  while (!sdCardBusInit())
+  {
     Serial.println("Errore inizializzazione card");
     delay(1000);
   }
   microphone_record("mono_right.wav", 15);
 }
 
-void loop() {
-
+void loop()
+{
 }
