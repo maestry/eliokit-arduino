@@ -8,11 +8,11 @@ The elioiot library is a collection of functions and classes that simplify the d
 
 ## Installation
 
-To install the elioiot library, follow the installation guide available at the following link: https://elioiot.it/docs/ELIO-Arduino-IDE.pdf
+To install the elioiot library, follow the installation guide available at the following link: https://elioiot.com/arduino/
 
 ## Documentation
 
-For more information on using the elioiot library, consult the general documentation available at the following link: https://elioiot.it/guide/
+For more information on using the elioiot library, consult the general documentation available at the following link: https://elioiot.com/guide/
 
 ## Support
 
