@@ -3,7 +3,7 @@
 [![GitHub all releases](https://img.shields.io/github/downloads/maestry/eliokit-arduino/total?style=for-the-badge)](https://github.com/maestry/eliokit-arduino/releases)
 
 
-# Arduino library for ELIO IOT Board
+# Arduino library for ELIO IOT Boards
 
 The Eliokit library is a collection of functions and classes that simplify the development of Arduino projects based on ELIO IOT Dev Board. It includes features for serial communication, digital and analog pin management, as well as sensor and actuator management.
 
