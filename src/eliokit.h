@@ -1,6 +1,8 @@
 #include "drivers/gpioExpander/PCAL9535A.h"
 extern "C" {
+// da eliminare
   #include "drivers/eInkDisplay/eInkDisplay.h"
+
   #include "drivers/gpioExpander/gpioExpander.h"
   #include "drivers/gpioExpander/chips/XL9535.h"
   #include "drivers/humTemp/chips/AHT20.h"
