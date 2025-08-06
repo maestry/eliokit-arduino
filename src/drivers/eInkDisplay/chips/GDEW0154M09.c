@@ -13,7 +13,7 @@
 
 #define ALLSCREEN_GRAGHBYTES 5000
 
-eInkDisplayHandler_t* eInkDisplayHandler;
+static eInkDisplayHandler_t* eInkDisplayHandler;
 
 ////////FUNCTION//////
 

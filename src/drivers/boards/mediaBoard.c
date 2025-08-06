@@ -1,127 +1,86 @@
 #include "mediaBoard.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "drivers/spi/spiPeripheral.h"
 #include "drivers/eInkDisplay/eInkDisplay.h"
 #include "drivers/touchButtonI2C/touchButton.h"
 #include "drivers/audio/amplifier/I2s/i2sout.h"
 #include "drivers/audio/mic/pdm/pdmMic.h"
 #include "drivers/boards/s3_bsp.h"
-#include "drivers/gpioExpander/gpioExpander.h"
+#include "esp32-hal-gpio.h"
 
-static void OSDelayMS(uint32_t delayMS);
-static void writeEINKCLK(uint8_t value);
-static void writeEINKMOSI(uint8_t value);
-static void writeEINKCS(uint8_t value);
-static void writeEINKDC(uint8_t value);
-static void writeEINKRST(uint8_t value);
-static uint8_t readEINKBUSY(void);
-static void initializeEINKgpios(void);
-
-static uint8_t keysStatus[11];
-
-
-uint8_t mediaBoardInitialize(void)
-{
-	uint8_t 							result = 0;
-	eInkGDEY0154D67DisplayHandler_t 	eInkDisplay;
-
-	// Expander Config For Media Board, initialize gpios
-	initializeEINKgpios();
-
-	// Init touch buttons
-	touchButtonInit();
-
-	// Init PDM MIC
-	//pdmMicInit();
-
-	// Init I2S OUT
-	//i2sOutInit();
-
-	// Init eink
-	eInkDisplay.delayMS = OSDelayMS;
-	eInkDisplay.writeCLK = writeEINKCLK;
-	eInkDisplay.writeMOSI = writeEINKMOSI;
-	eInkDisplay.writeCS = writeEINKCS;
-	eInkDisplay.writeRST = writeEINKRST;
-	eInkDisplay.writeDC = writeEINKDC;
-	eInkDisplay.readBUSY = readEINKBUSY;
-
-	eInkDisplayInit(&eInkDisplay);
-	eInkDisplayPrintStartImage();
-
-	printf("Media Board Initialized \n");
-
-	return result;
+// Ritardo in millisecondi basato su FreeRTOS
+static void OSDelayMS(uint32_t delayMS) {
+    vTaskDelay(pdMS_TO_TICKS(delayMS));
 }
 
-
-
-
-
-void mediaBoardInterruptHandler(void)
-{
-/*
-	touchButtonReadStatus(keysStatus);
-
-	for(int i = 0; i < 11; i++)
-	{
-		ets_printf("Touch Key %d value: %d \n", i, keysStatus[i]);
-	}
-*/
-
+// Callback per clock SPI bit-bang
+static void writeEINKCLK(uint8_t value) {
+    digitalWrite(EINK_DISPLAY_OUTPUT_SCK, value ? HIGH : LOW);
 }
 
-
-
-
-
-static void initializeEINKgpios(void)
-{
-	//gpioExpanderConfigForMediaBoard();
-/*
-	gpio_config_t io_conf = { };
-	io_conf.intr_type = GPIO_INTR_DISABLE;
-	io_conf.mode = GPIO_MODE_OUTPUT;
-	io_conf.pin_bit_mask = ((1ULL<<EINK_DISPLAY_OUTPUT_SCK) | (1ULL<<EINK_DISPLAY_OUTPUT_SDI));
-	io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
-	io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
-	gpio_config(&io_conf);
-
-	gpio_set_level(EINK_DISPLAY_OUTPUT_SDI, 0);
-	gpio_set_level(EINK_DISPLAY_OUTPUT_SCK, 1);
-	*/
+// Callback per MOSI SPI bit-bang
+static void writeEINKMOSI(uint8_t value) {
+    digitalWrite(EINK_DISPLAY_OUTPUT_SDI, value ? HIGH : LOW);
 }
 
-static void OSDelayMS(uint32_t delayMS)
-{
-	vTaskDelay(delayMS / portTICK_RATE_MS);
+// Callback per Chip Select
+static void writeEINKCS(uint8_t value) {
+    digitalWrite(EINK_DISPLAY_OUTPUT_CS, value ? HIGH : LOW);
 }
 
-static void writeEINKCLK(uint8_t value)
-{
-	gpio_set_level(EINK_DISPLAY_OUTPUT_SCK, value);
+// Callback per Data/Command
+static void writeEINKDC(uint8_t value) {
+    digitalWrite(EINK_DISPLAY_OUTPUT_DC, value ? HIGH : LOW);
 }
 
-static void writeEINKMOSI(uint8_t value)
-{
-	gpio_set_level(EINK_DISPLAY_OUTPUT_SDI, value);
+// Callback per Reset display
+static void writeEINKRST(uint8_t value) {
+    digitalWrite(EINK_DISPLAY_OUTPUT_RESET, value ? HIGH : LOW);
 }
 
-static void writeEINKCS(uint8_t value)
-{
-	//gpioExpanderWriteEINKCS(value);
+// Callback per Busy
+static uint8_t readEINKBUSY(void) {
+    return (uint8_t)(digitalRead(EINK_DISPLAY_INPUT_BUSY) == HIGH);
 }
 
-static void writeEINKDC(uint8_t value)
-{
-	///gpioExpanderWriteEINKDC(value);
+// Inizializzazione board multimedia
+uint8_t mediaBoardInitialize(void) {
+    // Inizializza il mutex SPI
+    spiPeripheralInit();
+
+    // Configura i GPIO per l'e-Ink
+    pinMode(EINK_DISPLAY_OUTPUT_SCK, OUTPUT);
+    pinMode(EINK_DISPLAY_OUTPUT_SDI, OUTPUT);
+    pinMode(EINK_DISPLAY_OUTPUT_CS, OUTPUT);
+    pinMode(EINK_DISPLAY_OUTPUT_DC, OUTPUT);
+    pinMode(EINK_DISPLAY_OUTPUT_RESET, OUTPUT);
+    pinMode(EINK_DISPLAY_INPUT_BUSY, INPUT);
+
+    // Prepara handler e-Ink
+    eInkGDEY0154D67DisplayHandler_t handler;
+    handler.writeCLK  = writeEINKCLK;
+    handler.writeMOSI = writeEINKMOSI;
+    handler.writeCS   = writeEINKCS;
+    handler.writeDC   = writeEINKDC;
+    handler.writeRST  = writeEINKRST;
+    handler.readBUSY  = readEINKBUSY;
+    handler.delayMS   = OSDelayMS;
+
+    eInkDisplayInit(&handler);
+
+    // Inizializza periferiche addizionali
+    touchButtonInit();
+    i2sOutInit();
+    pdmMicInit();
+
+    return 0;
 }
 
-static void writeEINKRST(uint8_t value)
-{
-	//gpioExpanderWriteEINKRST(value);
-}
-
-static uint8_t readEINKBUSY(void)
-{
-	return 0;//gpioExpanderReadEINKBUSY();
+// Handler per interrupt (es. touch button)
+void mediaBoardInterruptHandler(void) {
+    uint8_t status;
+    if (touchButtonReadStatus(&status) == 0) {
+        // Qui gestisci gli stati dei tasti
+    }
 }
